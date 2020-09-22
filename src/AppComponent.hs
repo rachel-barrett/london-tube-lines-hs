@@ -3,34 +3,35 @@
 {-# LANGUAGE TypeOperators   #-}
 
 module AppComponent
-  ( app ) where
+  ( server, Server, runIndefinitely) where
 
-import Data.Aeson ()
-import Data.Aeson.TH (deriveJSON, defaultOptions)
+import Data.Function ((&))
+import Routes.HttpApp (httpApp, API)
 import Network.Wai ( Application )
-import Servant
-    ( Application, serve, Proxy(..), JSON, type (:>), Get, Server )
+import Servant (Proxy(..), serve)
+import Network.Wai.Handler.Warp ( run )
 
-data User = User
-  { userId        :: Int
-  , userFirstName :: String
-  , userLastName  :: String
-  } deriving (Eq, Show)
+server :: Server
+server = buildServer defaultConfig app
 
-$(deriveJSON defaultOptions ''User)
+newtype Server = Server {runIndefinitely :: IO ()}
 
-type API = "users" :> Get '[JSON] [User]
+buildServer :: Config -> Application -> Server
+buildServer config app = Server {
+  runIndefinitely = do 
+    putStrLn $ "server running at localhost:"++show (config & port)
+    run (config & port) app
+}
+
+data Config = Config {
+  port :: Int,
+  databaseUrl :: String
+}
+
+defaultConfig = Config{port = 8080, databaseUrl = "replace_me"}
 
 app :: Application
-app = serve api server
+app = serve api httpApp
 
 api :: Proxy API
 api = Proxy
-
-server :: Server API
-server = return users
-
-users :: [User]
-users = [ User 1 "Isaac" "Newton"
-        , User 2 "Albert" "Einstein"
-        ]
