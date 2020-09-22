@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d8e4fad38d57310d29930f50eb25caae2102115aadfff3fe4443f40b3a956269
+-- hash: 2887c3c9afd652dcf7c0f4755a0998286fe92e648f2ea93766a477d7dafa5a56
 
 name:           servant-example
 version:        0.1.0.0
@@ -29,6 +29,10 @@ library
       AppComponent
       LibMain
       Routes.HttpApp
+      Routes.LineRoutes
+      Routes.StationRoutes
+      Services.LineService
+      Services.StationService
   other-modules:
       Paths_servant_example
   hs-source-dirs:

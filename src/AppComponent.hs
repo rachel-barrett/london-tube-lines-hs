@@ -4,7 +4,7 @@ module AppComponent
   ( server ) where
 
 import Data.Function ((&))
-import Routes.HttpApp (httpApp, API)
+import Routes.HttpApp (httpApp, HttpApp)
 import Network.Wai ( Application )
 import Servant (Proxy(..), serve)
 import Network.Wai.Handler.Warp ( run )
@@ -31,5 +31,5 @@ defaultConfig = Config {port = 8080, databaseUrl = "replace_me"}
 app :: Application
 app = serve api httpApp
 
-api :: Proxy API
+api :: Proxy HttpApp
 api = Proxy
