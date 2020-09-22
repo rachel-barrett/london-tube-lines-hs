@@ -8,16 +8,16 @@ module Routes.HttpApp
 import Routes.LineRoutes (lineRoutes, LineRoutes)
 import Routes.StationRoutes (stationRoutes, StationRoutes)
 
-import Data.Aeson ()
-import Data.Aeson.TH (deriveJSON, defaultOptions)
 import Servant
-    ( Application, JSON, type (:>), type (:<|>)(..), Get, Server, type EmptyAPI(..), EmptyServer)
+    ( Application, JSON, type (:>), type (:<|>)(..), Get, Server, type EmptyAPI(..), emptyServer)
 
 type HttpApp = 
-  "lines" :> LineRoutes 
+  EmptyAPI
+    :<|> "lines" :> LineRoutes 
     :<|> "stations" :> StationRoutes 
 
 httpApp :: Server HttpApp
 httpApp = 
-  lineRoutes 
+  emptyServer
+    :<|> lineRoutes 
     :<|> stationRoutes
