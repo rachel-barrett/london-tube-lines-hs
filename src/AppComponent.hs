@@ -1,9 +1,7 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeOperators   #-}
+{-# OPTIONS_GHC -F -pgmF=record-dot-preprocessor #-}
 
 module AppComponent
-  ( server, Server, runIndefinitely) where
+  ( server ) where
 
 import Data.Function ((&))
 import Routes.HttpApp (httpApp, API)
@@ -14,13 +12,13 @@ import Network.Wai.Handler.Warp ( run )
 server :: Server
 server = buildServer defaultConfig app
 
-newtype Server = Server {runIndefinitely :: IO ()}
+data Server = Server {runIndefinitely :: IO ()}
 
 buildServer :: Config -> Application -> Server
 buildServer config app = Server {
   runIndefinitely = do 
-    putStrLn $ "server running at localhost:"++show (config & port)
-    run (config & port) app
+    putStrLn $ "server running at localhost:"++show (config.port)
+    run (config.port) app
 }
 
 data Config = Config {
@@ -28,7 +26,7 @@ data Config = Config {
   databaseUrl :: String
 }
 
-defaultConfig = Config{port = 8080, databaseUrl = "replace_me"}
+defaultConfig = Config {port = 8080, databaseUrl = "replace_me"}
 
 app :: Application
 app = serve api httpApp

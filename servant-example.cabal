@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 641af62a61d4db999322574172b9428a7b4a452995695ea87fd26fad56bba837
+-- hash: d8e4fad38d57310d29930f50eb25caae2102115aadfff3fe4443f40b3a956269
 
 name:           servant-example
 version:        0.1.0.0
@@ -36,6 +36,8 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , record-dot-preprocessor
+    , record-hasfield
     , servant-server
     , wai
     , warp
@@ -51,6 +53,8 @@ executable servant-example-exe
   build-depends:
       aeson
     , base
+    , record-dot-preprocessor
+    , record-hasfield
     , servant-example
     , servant-server
     , wai
@@ -71,6 +75,8 @@ test-suite servant-example-test
     , hspec
     , hspec-wai
     , hspec-wai-json
+    , record-dot-preprocessor
+    , record-hasfield
     , servant-example
     , servant-server
     , wai

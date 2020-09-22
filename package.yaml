@@ -24,6 +24,8 @@ dependencies:
 - servant-server
 - wai
 - warp
+- record-dot-preprocessor
+- record-hasfield
 
 library:
   source-dirs: src
