@@ -8,6 +8,8 @@ Make tests compile and run
 Autogenerate the swagger
 Make Resource a monad transformer, or use from a library
 Use a database client that is on the current stack resolver
+  (maybe it could use quasiquoting to check that sql is correctly typed)
 Add tests for breaking changes to the api
 Try more complicated serialization and deserialization
+Add logging as middleware
 Can you encode the api in a GADT?

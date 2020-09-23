@@ -1,10 +1,10 @@
-name:                servant-example
+name:                london-tube-lines-hs
 version:             0.1.0.0
-github:              "githubuser/servant-example"
+github:              "rachel-barrett/london-tube-lines-hs"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2020 Author name here"
+author:              "Rachel Barrett"
+maintainer:          "rachel_barrett@live.co.uk"
+copyright:           "2020 Rachel Barrett"
 
 extra-source-files:
 - README.md
@@ -41,7 +41,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - base
-    - servant-example
+    - london-tube-lines-hs
 
 tests:
   servant-example-test:
@@ -53,7 +53,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - base
-    - servant-example
+    - london-tube-lines-hs
     - hspec
     - hspec-wai
     - hspec-wai-json
