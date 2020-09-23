@@ -4,6 +4,9 @@ module Services.LineService
   ( lineService )
   where
 
+import Daos.LineStationDao (lineStationDao)
+import Data.Function ((&))
+
 type Line = String
 
 data LineService = LineService {
@@ -13,6 +16,18 @@ data LineService = LineService {
 
 lineService :: LineService 
 lineService = LineService {
-  getAllLines = return ["line1", "line2", "line3"],
-  getLinesPassingThroughStation = \_ -> return ["line1"]
+
+  getAllLines = 
+    lineStationDao.find 
+      & fmap (\list -> list & map (.line)),
+
+  getLinesPassingThroughStation = 
+    \station ->
+      lineStationDao.find
+        & fmap (\list -> 
+            list 
+              & filter (\stationLine -> stationLine.station == station )
+              & map (.line)
+            )
+            
 }
