@@ -8,7 +8,7 @@ module Routes.StationRoutes
   , StationRoutes
   ) where
 
-import Services.StationService (stationService)
+import Services.StationService (StationService)
 import Servant
     ( type (:<|>)(..), QueryParam, JSON, type (:>), Get, Server )
 import Control.Monad.IO.Class (liftIO)
@@ -16,8 +16,8 @@ import Control.Monad.IO.Class (liftIO)
 type StationRoutes =
   QueryParam "onLine" String :> Get '[JSON] [String] 
 
-stationRoutes :: Server StationRoutes
-stationRoutes = \onLineQueryParam ->
+stationRoutes :: StationService -> Server StationRoutes
+stationRoutes stationService = \onLineQueryParam ->
   liftIO $
     case onLineQueryParam of 
       Just onLine -> stationService.getStationsOnLine onLine

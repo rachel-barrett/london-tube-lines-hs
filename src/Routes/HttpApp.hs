@@ -5,8 +5,8 @@
 module Routes.HttpApp
   ( httpApp, HttpApp ) where
 
-import Routes.LineRoutes (lineRoutes, LineRoutes)
-import Routes.StationRoutes (stationRoutes, StationRoutes)
+import Routes.LineRoutes (LineRoutes)
+import Routes.StationRoutes (StationRoutes)
 
 import Servant
     ( Application, JSON, type (:>), type (:<|>)(..), Get, Server, type EmptyAPI(..), emptyServer)
@@ -16,8 +16,8 @@ type HttpApp =
     :<|> "lines" :> LineRoutes 
     :<|> "stations" :> StationRoutes 
 
-httpApp :: Server HttpApp
-httpApp = 
+httpApp :: Server LineRoutes -> Server StationRoutes -> Server HttpApp
+httpApp lineRoutes stationRoutes = 
   emptyServer
     :<|> lineRoutes 
     :<|> stationRoutes

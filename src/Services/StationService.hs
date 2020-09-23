@@ -1,10 +1,11 @@
 {-# OPTIONS_GHC -F -pgmF=record-dot-preprocessor #-}
 
 module Services.StationService
-  ( stationService )
-  where
+  ( StationService
+  , stationService 
+  ) where
 
-import Daos.LineStationDao (lineStationDao)
+import Daos.LineStationDao (LineStationDao)
 import Data.Function ((&))
 
 type Station = String
@@ -14,8 +15,8 @@ data StationService = StationService {
   getStationsOnLine :: String -> IO [Station]
 }
 
-stationService :: StationService 
-stationService = StationService {
+stationService :: LineStationDao -> StationService 
+stationService lineStationDao = StationService {
 
   getAllStations = 
     lineStationDao.find 

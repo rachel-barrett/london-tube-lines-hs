@@ -1,7 +1,9 @@
 {-# OPTIONS_GHC -F -pgmF=record-dot-preprocessor #-}
 
 module Daos.LineStationDao 
-  (lineStationDao) where
+  ( LineStationDao
+  , lineStationDao
+  ) where
   
 import Data.Function ((&))
 

@@ -8,7 +8,7 @@ module Routes.LineRoutes
   , LineRoutes
   ) where
 
-import Services.LineService (lineService)
+import Services.LineService (LineService)
 import Servant
     ( type (:<|>)(..), JSON, type (:>), Get, Server , QueryParam)
 import Control.Monad.IO.Class (liftIO)
@@ -16,8 +16,8 @@ import Control.Monad.IO.Class (liftIO)
 type LineRoutes = 
   QueryParam "passingThroughStation" String :> Get '[JSON] [String] 
 
-lineRoutes :: Server LineRoutes
-lineRoutes = \passingThroughStationQueryParam -> 
+lineRoutes :: LineService -> Server LineRoutes
+lineRoutes lineService = \passingThroughStationQueryParam -> 
   liftIO $
     case passingThroughStationQueryParam of
       Just passingThroughStation -> lineService.getLinesPassingThroughStation passingThroughStation
