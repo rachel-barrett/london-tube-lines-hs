@@ -27,6 +27,9 @@ dependencies:
 - record-dot-preprocessor
 - record-hasfield
 - sqlite-simple
+- servant-swagger
+- swagger2
+- lens
 
 library:
   source-dirs: src

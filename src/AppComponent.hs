@@ -1,11 +1,13 @@
 {-# OPTIONS_GHC -F -pgmF=record-dot-preprocessor #-}
+{-# LANGUAGE DataKinds       #-}
+{-# LANGUAGE TypeOperators   #-}
 
 module AppComponent
   ( serverResource ) where
 
 import Data.Function ((&))
 import Network.Wai (Application)
-import Servant (Proxy(..), serve)
+import Servant (Proxy(..), serve, type (:<|>)(..))
 import Network.Wai.Handler.Warp (run)
 
 import qualified Daos.LineStationDao as LineStationDao
@@ -15,6 +17,8 @@ import qualified Routes.LineRoutes as LineRoutes
 import qualified Routes.StationRoutes as StationRoutes
 import qualified Routes.Routes as Routes
 import Routes.Routes (Routes)
+import qualified Routes.SwaggerRoute as SwaggerRoute
+import Routes.SwaggerRoute (SwaggerRoute)
 
 import Util.Resource as Resource
     ( ResourceConstructor(..),
@@ -55,11 +59,9 @@ httpAppApply environmentHandle =
     lineRoutes = LineRoutes.apply lineService
     stationRoutes = StationRoutes.apply stationService
     routes = Routes.apply lineRoutes stationRoutes
+    swaggerRoute = SwaggerRoute.value 
   in 
-    serve api routes
-
-api :: Proxy Routes
-api = Proxy
+    serve (Proxy :: Proxy (Routes :<|> SwaggerRoute)) (routes :<|> swaggerRoute)
 
 data EnvironmentHandle = EnvironmentHandle {
   connection :: Connection
