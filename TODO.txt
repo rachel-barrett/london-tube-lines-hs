@@ -1,0 +1,13 @@
+/Use Servant
+/Structure in a similar way to london-tube-lines scala
+/Use an sqlite database client
+/Use Resource abstraction
+/Use record dot preprocessor
+
+Make tests compile and run
+Autogenerate the swagger
+Make Resource a monad transformer, or use from a library
+Use a database client that is on the current stack resolver
+Add tests for breaking changes to the api
+Try more complicated serialization and deserialization
+Can you encode the api in a GADT?
