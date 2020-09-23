@@ -4,8 +4,8 @@ module LibMain
     ( main
     ) where
 
-import Data.Function ((&))
-import AppComponent (server)
+import AppComponent (serverResource)
+import Util.Resource ( Resource(use) )
 
 main :: IO ()
-main = server.runIndefinitely
+main = use serverResource (\server -> server.runIndefinitely)

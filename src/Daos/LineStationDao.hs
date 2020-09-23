@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -F -pgmF=record-dot-preprocessor #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Daos.LineStationDao 
   ( LineStationDao
@@ -6,29 +7,23 @@ module Daos.LineStationDao
   ) where
   
 import Data.Function ((&))
+import Database.SQLite.Simple
+    ( query_, field, FromRow(..), Connection )
 
 data LineStation = LineStation {
   line :: String,
   station :: String
 }
 
+instance FromRow LineStation where
+  fromRow = LineStation <$> field <*> field
+
 data LineStationDao = LineStationDao {
   find :: IO [LineStation]
 }
 
-lineStationDao :: LineStationDao
-lineStationDao = LineStationDao {
-  find = return lineStations
+lineStationDao :: Connection -> LineStationDao
+lineStationDao conn = LineStationDao {
+  find = 
+    query_ conn "select line, station from lineStation" 
 }
-
-lineStations :: [LineStation]
-lineStations = 
-  [ ("Central", "Notting Hill Gate")
-  , ("Central", "Bond Street")
-  , ("Jubilee", "Bond Street")
-  , ("Jubilee", "Green Park")
-  , ("Jubilee", "Westminster")
-  , ("Jubilee", "London Bridge")
-  , ("Northern", "London Bridge")
-  , ("Northern", "King's Cross St Pancras")
-  ] & map (\x -> case x of (,) a b -> LineStation a b)

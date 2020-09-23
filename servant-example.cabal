@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d4f7a8cf7e8200fb95699c8516a26b9721867b3c4d1d650f123eb9dd3bd2c31e
+-- hash: bf900dca02647e060595b7801b6359ab32a8e9e88209a0333a4c151b18f893b9
 
 name:           servant-example
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
       Routes.StationRoutes
       Services.LineService
       Services.StationService
+      Util.Resource
   other-modules:
       Paths_servant_example
   hs-source-dirs:
@@ -44,6 +45,7 @@ library
     , record-dot-preprocessor
     , record-hasfield
     , servant-server
+    , sqlite-simple
     , wai
     , warp
   default-language: Haskell2010
@@ -62,6 +64,7 @@ executable servant-example-exe
     , record-hasfield
     , servant-example
     , servant-server
+    , sqlite-simple
     , wai
     , warp
   default-language: Haskell2010
@@ -84,6 +87,7 @@ test-suite servant-example-test
     , record-hasfield
     , servant-example
     , servant-server
+    , sqlite-simple
     , wai
     , warp
   default-language: Haskell2010

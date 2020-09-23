@@ -26,6 +26,7 @@ dependencies:
 - warp
 - record-dot-preprocessor
 - record-hasfield
+- sqlite-simple
 
 library:
   source-dirs: src

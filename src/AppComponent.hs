@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -F -pgmF=record-dot-preprocessor #-}
 
 module AppComponent
-  ( server ) where
+  ( serverResource ) where
 
 import Data.Function ((&))
 import Network.Wai ( Application )
@@ -16,29 +16,36 @@ import qualified Routes.LineRoutes as Component (lineRoutes)
 import qualified Routes.StationRoutes as Component (stationRoutes)
 import qualified Routes.HttpApp as Component (httpApp)
 
-server :: Server
-server = buildServer defaultConfig app
+import Util.Resource as Resource
+import Database.SQLite.Simple
+
+serverResource :: Resource Server
+serverResource = do
+  httpApp <- httpAppResource
+  let port = defaultConfig.port
+  let server = buildServer port httpApp
+  return server
 
 data Server = Server {runIndefinitely :: IO ()}
 
-buildServer :: Config -> Application -> Server
-buildServer config app = Server {
+buildServer :: Port -> Application -> Server
+buildServer port app = Server {
   runIndefinitely = do 
-    putStrLn $ "server running at localhost:"++show (config.port)
-    run (config.port) app
+    putStrLn $ "server running at localhost:"++show (port)
+    run port app
 }
 
-data Config = Config {
-  port :: Int,
-  databaseUrl :: String
-}
+type Port = Int
 
-defaultConfig = Config {port = 8080, databaseUrl = "replace_me"}
+httpAppResource :: Resource Application
+httpAppResource = do
+  environmentHandle <- buildEnvironmentHandle defaultConfig
+  let httpApp = buildApp environmentHandle
+  return httpApp
 
-app :: Application
-app = 
-  let
-    lineStationDao = Component.lineStationDao
+buildApp :: EnvironmentHandle -> Application
+buildApp environmentHandle = let
+    lineStationDao = Component.lineStationDao environmentHandle.connection
     lineService = Component.lineService lineStationDao
     stationService = Component.stationService lineStationDao
     lineRoutes = Component.lineRoutes lineService
@@ -48,3 +55,26 @@ app =
 
 api :: Proxy HttpApp
 api = Proxy
+
+data EnvironmentHandle = EnvironmentHandle {
+  connection :: Connection
+}
+
+buildEnvironmentHandle :: Config -> Resource EnvironmentHandle
+buildEnvironmentHandle config = 
+  Resource.apply (ResourceConstructor 
+    { acquire = open config.databaseUrl
+    , release = close
+    }
+  ) & fmap (EnvironmentHandle)
+
+data Config = Config 
+  { port :: Int
+  , databaseUrl :: String
+  }
+
+defaultConfig :: Config
+defaultConfig = Config 
+  { port = 8080
+  , databaseUrl = "data/london-tube-lines.db"
+  }
