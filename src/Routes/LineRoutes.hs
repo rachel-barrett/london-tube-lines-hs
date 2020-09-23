@@ -4,20 +4,19 @@
 {-# LANGUAGE TypeOperators   #-}
 
 module Routes.LineRoutes
-  ( lineRoutes
-  , LineRoutes
+  ( LineRoutes
+  , apply
   ) where
 
 import Services.LineService (LineService)
-import Servant
-    ( type (:<|>)(..), JSON, type (:>), Get, Server , QueryParam)
+import Servant ( JSON, QueryParam, type (:>), Get, Server )
 import Control.Monad.IO.Class (liftIO)
 
 type LineRoutes = 
   QueryParam "passingThroughStation" String :> Get '[JSON] [String] 
 
-lineRoutes :: LineService -> Server LineRoutes
-lineRoutes lineService = \passingThroughStationQueryParam -> 
+apply :: LineService -> Server LineRoutes
+apply lineService = \passingThroughStationQueryParam -> 
   liftIO $
     case passingThroughStationQueryParam of
       Just passingThroughStation -> lineService.getLinesPassingThroughStation passingThroughStation

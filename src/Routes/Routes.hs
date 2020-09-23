@@ -2,22 +2,24 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
 
-module Routes.HttpApp
-  ( httpApp, HttpApp ) where
+module Routes.Routes
+  ( Routes
+  , apply 
+  ) where
 
 import Routes.LineRoutes (LineRoutes)
 import Routes.StationRoutes (StationRoutes)
 
 import Servant
-    ( Application, JSON, type (:>), type (:<|>)(..), Get, Server, type EmptyAPI(..), emptyServer)
+    ( emptyServer, type (:<|>)(..), EmptyAPI, type (:>), Server )
 
-type HttpApp = 
+type Routes = 
   EmptyAPI
     :<|> "lines" :> LineRoutes 
     :<|> "stations" :> StationRoutes 
 
-httpApp :: Server LineRoutes -> Server StationRoutes -> Server HttpApp
-httpApp lineRoutes stationRoutes = 
+apply :: Server LineRoutes -> Server StationRoutes -> Server Routes
+apply lineRoutes stationRoutes = 
   emptyServer
     :<|> lineRoutes 
     :<|> stationRoutes

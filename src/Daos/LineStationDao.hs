@@ -3,27 +3,26 @@
 
 module Daos.LineStationDao 
   ( LineStationDao
-  , lineStationDao
+  , apply
   ) where
-  
-import Data.Function ((&))
+
 import Database.SQLite.Simple
     ( query_, field, FromRow(..), Connection )
+
+data LineStationDao = LineStationDao {
+  find :: IO [LineStation]
+}
 
 data LineStation = LineStation {
   line :: String,
   station :: String
 }
 
-instance FromRow LineStation where
-  fromRow = LineStation <$> field <*> field
-
-data LineStationDao = LineStationDao {
-  find :: IO [LineStation]
-}
-
-lineStationDao :: Connection -> LineStationDao
-lineStationDao conn = LineStationDao {
+apply :: Connection -> LineStationDao
+apply conn = LineStationDao {
   find = 
     query_ conn "select line, station from lineStation" 
 }
+
+instance FromRow LineStation where
+  fromRow = LineStation <$> field <*> field

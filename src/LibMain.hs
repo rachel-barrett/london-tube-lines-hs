@@ -1,11 +1,14 @@
 {-# OPTIONS_GHC -F -pgmF=record-dot-preprocessor #-}
 
 module LibMain
-    ( main
-    ) where
+  ( main
+  ) where
 
 import AppComponent (serverResource)
 import Util.Resource ( Resource(use) )
 
 main :: IO ()
-main = use serverResource (\server -> server.runIndefinitely)
+main = 
+  use serverResource (\server -> 
+    server.runIndefinitely
+  )

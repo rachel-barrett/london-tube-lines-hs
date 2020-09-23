@@ -2,32 +2,36 @@
 
 module Services.StationService
   ( StationService
-  , stationService 
+  , apply
   ) where
 
 import Daos.LineStationDao (LineStationDao)
 import Data.Function ((&))
+import Data.List (nub)
 
+data StationService = StationService 
+  { getAllStations :: IO [Station]
+  , getStationsOnLine :: String -> IO [Station]
+  }
 type Station = String
 
-data StationService = StationService {
-  getAllStations :: IO [Station],
-  getStationsOnLine :: String -> IO [Station]
-}
+apply :: LineStationDao -> StationService 
+apply lineStationDao = StationService 
+  {
 
-stationService :: LineStationDao -> StationService 
-stationService lineStationDao = StationService {
-
-  getAllStations = 
-    lineStationDao.find 
-      & fmap (\list -> list & map (.station)),
-
-  getStationsOnLine = 
-    \line ->
-      lineStationDao.find
+    getAllStations = 
+      lineStationDao.find 
         & fmap (\list -> 
             list 
-              & filter (\stationLine -> stationLine.line == line )
+              & map (.station)
+              & nub
+          )
+
+  , getStationsOnLine = \line ->
+      lineStationDao.find
+        & fmap ( \list -> 
+            list 
+              & filter ( \stationLine -> stationLine.line == line )
               & map (.station)
             )
 

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bf900dca02647e060595b7801b6359ab32a8e9e88209a0333a4c151b18f893b9
+-- hash: 6e7bbcb11325bd23764d956fdd09f290232c3608d095e3984d1806704c27b2de
 
 name:           servant-example
 version:        0.1.0.0
@@ -29,8 +29,8 @@ library
       AppComponent
       Daos.LineStationDao
       LibMain
-      Routes.HttpApp
       Routes.LineRoutes
+      Routes.Routes
       Routes.StationRoutes
       Services.LineService
       Services.StationService

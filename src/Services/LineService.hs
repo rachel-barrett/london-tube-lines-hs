@@ -2,33 +2,37 @@
 
 module Services.LineService
   ( LineService
-  , lineService 
+  , apply 
   ) where
 
 import Daos.LineStationDao (LineStationDao)
 import Data.Function ((&))
+import Data.List (nub)
 
+data LineService = LineService 
+  { getAllLines :: IO [Line]
+  , getLinesPassingThroughStation :: String -> IO [Line]
+  }
 type Line = String
 
-data LineService = LineService {
-  getAllLines :: IO [Line],
-  getLinesPassingThroughStation :: String -> IO [Line]
-}
+apply :: LineStationDao -> LineService
+apply lineStationDao = LineService 
+  {
 
-lineService :: LineStationDao -> LineService
-lineService lineStationDao = LineService {
-
-  getAllLines = 
-    lineStationDao.find 
-      & fmap (\list -> list & map (.line)),
-
-  getLinesPassingThroughStation = 
-    \station ->
-      lineStationDao.find
-        & fmap (\list -> 
+    getAllLines = 
+      lineStationDao.find 
+        & fmap ( \list -> 
             list 
-              & filter (\stationLine -> stationLine.station == station )
+              & map (.line)
+              & nub
+          )
+
+  , getLinesPassingThroughStation = \station ->
+      lineStationDao.find
+        & fmap ( \list -> 
+            list 
+              & filter ( \stationLine -> stationLine.station == station )
               & map (.line)
             )
 
-}
+  }
