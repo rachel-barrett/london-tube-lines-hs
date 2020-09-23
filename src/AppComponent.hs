@@ -17,8 +17,8 @@ import qualified Routes.LineRoutes as LineRoutes
 import qualified Routes.StationRoutes as StationRoutes
 import qualified Routes.Routes as Routes
 import Routes.Routes (Routes)
-import qualified Routes.SwaggerRoute as SwaggerRoute
-import Routes.SwaggerRoute (SwaggerRoute)
+import qualified Routes.SwaggerRoutes as SwaggerRoutes
+import Routes.SwaggerRoutes (SwaggerRoutes)
 
 import Util.Resource as Resource
     ( ResourceConstructor(..),
@@ -59,9 +59,9 @@ httpAppApply environmentHandle =
     lineRoutes = LineRoutes.apply lineService
     stationRoutes = StationRoutes.apply stationService
     routes = Routes.apply lineRoutes stationRoutes
-    swaggerRoute = SwaggerRoute.value 
+    swaggerRoutes = SwaggerRoutes.value
   in 
-    serve (Proxy :: Proxy (Routes :<|> SwaggerRoute)) (routes :<|> swaggerRoute)
+    serve (Proxy :: Proxy (SwaggerRoutes :<|> Routes)) (swaggerRoutes :<|> routes)
 
 data EnvironmentHandle = EnvironmentHandle {
   connection :: Connection
