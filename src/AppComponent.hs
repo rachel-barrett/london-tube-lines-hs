@@ -24,14 +24,17 @@ import Util.Resource as Resource
     ( ResourceConstructor(..),
       Resource,
       apply )
-import Database.SQLite.Simple ( close, open, Connection )
+import qualified Database.SQLite.Simple as Database
 
 serverResource :: Resource Server
 serverResource = do
-  httpApp <- httpAppResource
-  let port = configDefault.port
+  let config = configDefault
+  environmentHandle <- environmentHandleResourceApply config
+  let httpApp = httpAppApply environmentHandle
+  let port = config.port
   let server = serverApply port httpApp
   return server
+
 
 data Server = Server {runIndefinitely :: IO ()}
 
@@ -41,19 +44,13 @@ serverApply port app = Server {
     putStrLn $ "starting server at localhost:"++show (port)
     run port app
 }
-
 type Port = Int
 
-httpAppResource :: Resource Application
-httpAppResource = do
-  environmentHandle <- environmentHandleResource
-  let httpApp = httpAppApply environmentHandle
-  return httpApp
 
 httpAppApply :: EnvironmentHandle -> Application
 httpAppApply environmentHandle = 
   let
-    lineStationDao = LineStationDao.apply environmentHandle.connection
+    lineStationDao = LineStationDao.apply environmentHandle.databaseConnection
     lineService = LineService.apply lineStationDao
     stationService = StationService.apply lineStationDao
     lineRoutes = LineRoutes.apply lineService
@@ -63,30 +60,28 @@ httpAppApply environmentHandle =
   in 
     serve (Proxy :: Proxy (SwaggerRoutes :<|> Routes)) (swaggerRoutes :<|> routes)
 
-data EnvironmentHandle = EnvironmentHandle {
-  connection :: Connection
-}
 
-environmentHandleResource :: Resource EnvironmentHandle
-environmentHandleResource = environmentHandleResourceApply configDefault
+data EnvironmentHandle = EnvironmentHandle {
+  databaseConnection :: Database.Connection
+}
 
 environmentHandleResourceApply :: Config -> Resource EnvironmentHandle
 environmentHandleResourceApply config =
   do
-    connection <-  Resource.apply (ResourceConstructor 
-      { acquire = open config.databaseUrl
-      , release = close
+    databaseConnection <-  Resource.apply (ResourceConstructor 
+      { acquire = Database.open config.databasePath
+      , release = Database.close
       })
-    return $ EnvironmentHandle {connection = connection}
+    return $ EnvironmentHandle {databaseConnection = databaseConnection}
 
 
 data Config = Config 
   { port :: Int
-  , databaseUrl :: String
+  , databasePath :: String
   }
 
 configDefault :: Config
 configDefault = Config 
   { port = 8080
-  , databaseUrl = "data/london-tube-lines.db"
+  , databasePath = "data/london-tube-lines.db"
   }

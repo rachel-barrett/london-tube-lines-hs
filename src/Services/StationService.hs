@@ -17,22 +17,26 @@ type Station = String
 
 apply :: LineStationDao -> StationService 
 apply lineStationDao = StationService 
-  {
-
-    getAllStations = 
-      lineStationDao.find 
-        & fmap (\list -> 
-            list 
-              & map (.station)
-              & nub
-          )
-
-  , getStationsOnLine = \line ->
-      lineStationDao.find
-        & fmap ( \list -> 
-            list 
-              & filter ( \stationLine -> stationLine.line == line )
-              & map (.station)
+  
+  { getAllStations = getAllStations
+  , getStationsOnLine = getStationsOnLine
+  }
+    where
+      
+      getAllStations :: IO [Station]
+      getAllStations = 
+        lineStationDao.find 
+          & fmap (\list -> 
+              list 
+                & map (.station)
+                & nub
             )
-
-}
+      
+      getStationsOnLine :: String -> IO [Station]
+      getStationsOnLine line =
+        lineStationDao.find
+          & fmap ( \list -> 
+              list 
+                & filter ( \stationLine -> stationLine.line == line )
+                & map (.station)
+              )

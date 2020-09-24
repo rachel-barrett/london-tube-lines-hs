@@ -6,11 +6,21 @@
 /Autogenerate the swagger json
 /Add swagger ui
 
+Generate swagger.json as static file at compile time - this way it is in version control
+Try more complicated serialization and deserialization
+Add search paths and capture paths
+How to do a 404 route in servant? (Will it automatically get added to the swagger?)
+
+Allow Schema to have extra info e.g. descriptions and summary and possibly extra error responses that are not in the code.
+Generate ToSchema and ToJSON from the same template haskell method
 Make tests compile and run
 Make Resource a monad transformer, or use from a library
 Use a database client that is on the current stack resolver
   (maybe it could use quasiquoting to check that sql is correctly typed)
 Add tests for breaking changes to the api
-Try more complicated serialization and deserialization
 Add logging as middleware
 Can you encode the api in a GADT?
+haskell linting
+
+simultaneous api versions
+automated versioning based on breaking changes
